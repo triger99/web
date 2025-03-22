@@ -1,7 +1,5 @@
-import os
-
-BASE_DIR = os.path.dirname(__file__)
-
-SQLALCHEMY_DATABASE_URI = 'sqlite:///{}'.format(os.path.join(BASE_DIR, 'pybo.db'))
-SQLALCHEMY_TRACK_MODIFICATIONS = False
+DB_HOST = 'localhost'
+DB_USER = 'root'
+DB_PASSWORD = 'qualiayc2421@'
+DB_NAME = 'web_db'
 SECRET_KEY = "dev"

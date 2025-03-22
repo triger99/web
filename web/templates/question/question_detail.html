@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-3">
+    <h1>질문 목록</h1>
+    
+    <!-- 여러 질문 출력 -->
+    {% for question in questions %}
+    <div class="question-item">
+        <h2>{{ question.subject }}</h2>
+        <p><strong>작성일:</strong> {{ question.create_date|datetime('%Y-%m-%d %H:%M:%S') }}</p>  <!-- 날짜 형식 추가 -->
+        <p><strong>내용:</strong> {{ question.content }}</p>  <!-- 질문의 상세 내용 -->
+
+        <!-- 수정 폼 (Edit) -->
+        <form action="{{ url_for('question.update', question_id=question.id) }}" method="POST">
+            <div class="form-group">
+                <label for="subject_{{ question.id }}">제목</label>
+                <input type="text" id="subject_{{ question.id }}" name="subject" class="form-control" value="{{ question.subject }}" required>
+            </div>
+            <div class="form-group">
+                <label for="content_{{ question.id }}">내용</label>
+                <textarea id="content_{{ question.id }}" name="content" class="form-control" required>{{ question.content }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">수정하기</button>
+        </form>
+
+        <!-- 삭제 버튼 (Delete) -->
+        <form action="{{ url_for('question.delete', question_id=question.id) }}" method="POST" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+            <button type="submit" class="btn btn-danger mt-2">삭제하기</button>
+        </form>
+
+        <hr> <!-- 각 질문 사이에 구분선 추가 -->
+    </div>
+    {% endfor %}
+
+    <a href="{{ url_for('question._list') }}" class="btn btn-secondary mt-3">목록으로 돌아가기</a>
+</div>
+{% endblock %}

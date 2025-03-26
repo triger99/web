@@ -3,12 +3,11 @@ import pymysql.cursors
 
 
 from datetime import datetime
-from flask import Blueprint, render_template, request, url_for, g , abort,flash
+from flask import Blueprint, render_template, request, url_for, g , abort
 from werkzeug.utils import redirect
 from ..forms import QuestionForm
 from ..views.auth_views import login_required
 from ..db import get_databse_connection
-from ..models import Question
 
 
 bp = Blueprint('question', __name__, url_prefix='/question')

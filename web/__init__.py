@@ -12,10 +12,12 @@ def create_app():
 
     create_tables()
     # 블루프린트
-    from .views import main_views, question_views, auth_views
+    from .views import main_views, question_views, auth_views, file_views
     app.register_blueprint(main_views.bp)
     app.register_blueprint(question_views.bp)
     app.register_blueprint(auth_views.bp)
+    app.register_blueprint(file_views.bp)
+    
 
     # 필터
     from .filter import format_datetime

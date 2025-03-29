@@ -2,16 +2,44 @@
 
 {% block content %}
 <div class="container my-3">
-    <h1>질문 목록</h1>
-    
-    <!-- 여러 질문 출력 -->
-    {% for question in questions %}
-    <div class="question-item">
-        <h2>{{ question.subject }}</h2>
-        <p><strong>작성일:</strong> {{ question.create_date|datetime('%Y-%m-%d %H:%M:%S') }}</p>  <!-- 날짜 형식 추가 -->
-        <p><strong>내용:</strong> {{ question.content }}</p>  <!-- 질문의 상세 내용 -->
 
-        <!-- 수정 폼 (Edit) -->
+    <!-- flash 메시지 표시 -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-danger" role="alert">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% if question.is_secret and 'authorized_' ~ question.id not in session %}
+        <!-- 비밀글인 경우 비밀번호 입력 폼을 표시 -->
+        <p>🔒 이 글은 비밀글입니다. 비밀번호를 입력하세요.</p>
+        <form action="{{ url_for('question.check_password', question_id=question.id) }}" method="POST">
+            <input type="password" name="password" placeholder="비밀번호 입력">
+            <button type="submit">확인</button>
+        </form>
+    {% else %}
+        <!-- 비밀번호를 맞춘 경우 제목과 내용 표시 -->
+        <h1>{{ question.subject }}</h1> <!-- 제목 -->
+        <p><strong>작성일:</strong> {{ question.create_date|datetime('%Y-%m-%d %H:%M:%S') }}</p>
+        <p><strong>내용:</strong> {{ question.content }}</p>
+
+        <!-- 파일 다운로드 링크 -->
+        <h5 class="my-3">첨부파일</h5>
+        {% if files %}
+            <ul>
+                {% for file in files %}
+                    <li><a href="{{ url_for('question.file_download', filename=file.filename) }}" download>{{ file.filename }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>첨부파일이 없습니다.</p>
+        {% endif %}
+
+        <!-- 수정 폼 -->
         <form action="{{ url_for('question.update', question_id=question.id) }}" method="POST">
             <div class="form-group">
                 <label for="subject_{{ question.id }}">제목</label>
@@ -21,18 +49,17 @@
                 <label for="content_{{ question.id }}">내용</label>
                 <textarea id="content_{{ question.id }}" name="content" class="form-control" required>{{ question.content }}</textarea>
             </div>
-            <button type="submit" class="btn btn-primary">수정하기</button>
+            <div class="d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-primary">수정하기</button>
+                <!-- 삭제 버튼 -->
+                <form action="{{ url_for('question.delete', question_id=question.id) }}" method="POST" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+                    <button type="submit" class="btn btn-danger mt-2">삭제하기</button>
+                </form>
+            </div>
         </form>
-
-        <!-- 삭제 버튼 (Delete) -->
-        <form action="{{ url_for('question.delete', question_id=question.id) }}" method="POST" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
-            <button type="submit" class="btn btn-danger mt-2">삭제하기</button>
-        </form>
-
-        <hr> <!-- 각 질문 사이에 구분선 추가 -->
-    </div>
-    {% endfor %}
+    {% endif %}
 
     <a href="{{ url_for('question._list') }}" class="btn btn-secondary mt-3">목록으로 돌아가기</a>
+
 </div>
 {% endblock %}

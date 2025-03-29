@@ -1,19 +1,19 @@
 import pymysql
-import config
+from config import DB_CONFIG
 
 ## sql 데이터 베이스 연동 
 def get_databse_connection():
-    connection = pymysql.connect(
-        host = config.DB_HOST,
-        user = config.DB_USER,
-        password= config.DB_PASSWORD,
-        database= config.DB_NAME,
-        charset='utf8mb4',
-        cursorclass=pymysql.cursors.DictCursor # 결과를 Dict형태로 반환 
+
+    connection =  pymysql.connect(
+        host=DB_CONFIG['host'],
+        user=DB_CONFIG['user'],
+        password=DB_CONFIG['password'],
+        database=DB_CONFIG['database'],
+        port=DB_CONFIG['port'],
+        charset=DB_CONFIG['charset'],
+        cursorclass=pymysql.cursors.DictCursor  # 딕셔너리 형태로 결과 반환
     )
     return connection
-
-
 
 
 ## USER table 생성 
@@ -32,7 +32,6 @@ def create_user_table():
         conn.commit()
         conn.close()
 
-# QUestion table 생성
 def create_question_table():
     sql = """
         CREATE TABLE IF NOT EXISTS question(
@@ -41,7 +40,9 @@ def create_question_table():
          content TEXT NOT NULL,
          create_date DATETIME NOT NULL, 
          user_id INT,
-         FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE   
+        is_secret BOOLEAN NOT NULL DEFAULT 0,
+         password VARCHAR(255) NULL,
+         FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
         )
     """
     conn = get_databse_connection()
@@ -50,8 +51,23 @@ def create_question_table():
         conn.commit()
         conn.close()
 
+def create_file_table():
+    sql = """
+        CREATE TABLE IF NOT EXISTS file(
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            filename VARCHAR(255), 
+            data LONGBLOB,
+            question_id INT,
+            FOREIGN KEY (question_id) REFERENCES question(id) ON DELETE CASCADE 
+        )
+    """
+    conn = get_databse_connection()
+    with conn.cursor() as cursor:
+        cursor.execute(sql)
+        conn.commit()
+        conn.close()
 
 def create_tables():
     create_user_table()
     create_question_table()
-
+    create_file_table()

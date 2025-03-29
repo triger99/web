@@ -25,6 +25,13 @@
             <input type="text" class="form-control" name="email" id="email"
                    value="{{ form.email.data or '' }}">
         </div>
+
+        <div class = "mb-3">
+            <label for="school">학교 이름</label>
+            <input type="text" class="form-control" name="school_name" id="school_name"
+                value="{{form.school_name.data or ''}}">
+
+        </div>
         <button type="submit" class="btn btn-primary">생성하기</button>
     </form>
 </div>

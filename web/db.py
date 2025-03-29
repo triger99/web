@@ -23,7 +23,10 @@ def create_user_table():
          id INT AUTO_INCREMENT PRIMARY KEY,
          username VARCHAR(200) UNICODE NOT NULL,
          password VARCHAR(200) UNICODE NOT NULL,
-         email VARCHAR(20) UNIQUE NOT NULL
+         email VARCHAR(20) NOT NULL,
+         school_name VARCHAR(255) NOT NULL,
+         profile_image VARCHAR(255)
+
         )
     """
     conn = get_databse_connection()

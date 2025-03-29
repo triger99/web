@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}My profile - 프로필{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h3>프로필</h3>
+</div>
+
+<div class="col-mb-4">
+    <img src="{{ url_for('static', filename='profile_pics/' + user.profile_image) }}" alt="Profile Image" style="width: 150px; height: 150px; border-radius: 50%;">
+    
+    <ul>
+        <li>이름: {{ user.username }}</li>
+        <li>이메일: {{ user.email }}</li>
+        <li>학교: {{ user.school_name }}</li>
+    </ul>
+
+    <a href="{{ url_for('profile.edit_profile') }}" class="btn btn-primary">프로필 수정</a>
+</div>
+
+{% endblock %}

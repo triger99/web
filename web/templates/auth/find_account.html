@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>아이디 / 비밀번호 찾기</h2>
+
+    <!-- Flash 메시지 출력 -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- 아이디 찾기 -->
+    <h3>아이디 찾기</h3>
+    <form action="{{ url_for('auth.find_id') }}" method="POST">
+        <input type="email" name="email" placeholder="가입한 이메일 입력" required>
+        <button type="submit">아이디 찾기</button>
+    </form>
+
+    <!-- 비밀번호 찾기-->
+     <h3> 비밀번호 찾기</h3>
+     <form action="{{url_for('auth.find_password')}}" method="POST">
+        <input type="text" name="username" placeholder="아이디 입력" required>
+        <input type="email" name="email" placeholder="가입한 이메일 입력 " required>
+        <button type="submit">비밀번호 찾기</button>
+     </form>
+
+</div>
+{% endblock %}

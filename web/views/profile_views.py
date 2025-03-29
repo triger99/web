@@ -3,7 +3,20 @@ from ..views.auth_views import login_required
 from ..db import get_databse_connection
 from ..models import User
 from ..forms import UserUpdateForm
+from werkzeug.utils import secure_filename
+import os
+
+
 bp = Blueprint('profile', __name__, url_prefix='/profile')
+
+
+PROFILE_PIC_FOLDER = 'static/profile_pics'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 
 
@@ -11,8 +24,6 @@ bp = Blueprint('profile', __name__, url_prefix='/profile')
 @login_required
 def my_profile():
     user_id = session.get('user_id')
-    if not user_id:
-        return redirect(url_for('auth.login'))  # 세션이 없으면 로그인 페이지로 이동
 
     user = User.get_user_by_id(user_id)  #  사용자 정보 가져오기
     form = UserUpdateForm(obj=user)
